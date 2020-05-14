@@ -1,3 +1,7 @@
+
+# colonne: barcode 33 mila matrix[,x]
+# righe: geni 3 mila matrix[x,]
+
 getColnames <- function(path)
 {
   #get filename

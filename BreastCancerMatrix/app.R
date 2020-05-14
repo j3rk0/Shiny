@@ -4,6 +4,7 @@ library(shinybusy)
 library(shiny)
 library(ggplot2)
 source("SaveAndLoadMatrix.R")
+source("Normalization.R")
 
 ui <- fluidPage(
     
@@ -16,9 +17,7 @@ ui <- fluidPage(
             p("the directory must contain: matrix.mtx, barcode.tsv, features.tsv and tissue_positions_list.csv ",style="margin-bottom:30px"),
             directoryInput('directory',label = "Files directory:"),
             actionButton("load","load",style="margin-bottom:30px"),
-            selectInput("gene","Gene to map:",c("PGR","ERBB2","MKI67","ESR1")),
-            actionButton("plot","plot")
-            
+            selectizeInput("gene","Gene to map:",c(Choose='',NULL))
         ),
         mainPanel(
             fluidRow(align="center",
@@ -45,12 +44,9 @@ server <- function(input, output, session) {
     output$loaded<-renderText("matrix not loaded")
     
     #directory selection:
-    observeEvent(
-        ignoreNULL = TRUE,
-        eventExpr = {
+    observeEvent(ignoreNULL = TRUE, eventExpr = {
             input$directory
-        },
-        handlerExpr = {
+        }, handlerExpr = {
             if (input$directory > 0) {
                 # condition prevents handler execution on initial app launch
                 
@@ -60,51 +56,71 @@ server <- function(input, output, session) {
                 # update the widget value
                 updateDirectoryInput(session, 'directory', value = path)
             }
-        }
-    )
+        })
+    
+    #reactive calculate the gene expression
+    res<-reactive({
+         if(!is.null(matrix)){
+            getGenePosition(matrix,positions,input$gene)
+        }    
+    })
+    
+    #reactive calculate the dimension of the dots
+    dim<-reactive({(session$clientData[["output_dens_width"]])/150 })
     
     #LOAD THE MATRIX
     observeEvent(input$load,{
-        if(input$directory>0)
+        
+        if(input$directory>0 )
         {
             #get the files directory
             directory<-readDirectoryInput(session,'directory')
             
-            show_modal_spinner()
+            matrixFile<-paste(directory,"matrix.mtx",sep="/")
+            rowFile  <- paste(directory,"features.tsv",sep = "/")
+            colsFile <- paste(directory,"barcodes.tsv",sep = "/")
+            posixFile <- paste(directory,"tissue_positions_list.csv",sep = "/")
             
-            #function to load matrix and gene positions dataframe
-            matrix<<-loadMatrix(directory)
-            positions<<-loadPositions(directory)
+            #check if files exists
             
-            remove_modal_spinner()
+            if(file.exists(matrixFile)&&file.exists(rowFile)&&file.exists(colsFile)&&file.exists(posixFile))
+            {
+                show_modal_spinner()
             
-            #update UI
-            output$loaded<-renderText("matrix loaded")
+                #function to load matrix and gene positions dataframe
+                matrix<<-logMatrix( removeUnexpressed(loadMatrix(directory),1))
+                positions<<-loadPositions(directory)
             
-        }
-    })
-    
-    #PLOT THE GRAPHICS
-    observeEvent(input$plot,{
-        #matrix is loaded
-        if(!is.null(matrix))
-        {
-            #function to get gene positions
-            res<-getGenePosition(matrix,positions,input$gene)
+                remove_modal_spinner()
             
-            #calculate the dimension of point based on graphs actual dimension
-            dim<-(session$clientData[["output_dens_width"]])/150
-            #plot the graphics
-            output$conc <- renderPlot(ggplot(res,aes(x,y)) + geom_point(aes(col=val),size=dim))
-            output$dens <- renderPlot(ggplot(res,aes(x,y)) + geom_hex())
+                #update gene selection input
+                updateSelectizeInput(session,'gene',choices = rownames(matrix),server = TRUE)
             
-        }else{
-            #no matrix is loaded
-            output$loaded<-renderText("need to load a matrix to plot")
+                #Start to Plot 
+                output$conc <- renderPlot({
+                    if(input$gene!=""){
+                        ggplot(res(),aes(x,y)) + geom_point(aes(col=val),size=dim())
+                    }
+                    
+                })
+            
+                output$dens <- renderPlot({
+                    if(input$gene!=""){
+                        ggplot(res(),aes(x,y)) + geom_hex()  
+                    }
+                })
+            
+                #update UI
+                output$loaded<-renderText("matrix loaded")
+            
+            }else{ output$loaded <- renderText("some file doesn't exixts")} 
         }
     })
     
 }
 
+
+
+options(browser='false')
 # Run the application 
 shinyApp(ui = ui, server = server)
