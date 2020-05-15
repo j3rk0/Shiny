@@ -1,6 +1,8 @@
 
 # colonne: barcode 33 mila matrix[,x]
 # righe: geni 3 mila matrix[x,]
+cells_indexes <- read.csv("library/cells_indexes.csv")
+
 
 getColnames <- function(path)
 {
@@ -46,28 +48,15 @@ loadMatrix <- function(path)
   matrix
 }
 
-loadPositions <- function(path)
-{
-  #filename
-  posixFile <- paste(path,"tissue_positions_list.csv",sep = "/")
-  
-  #read file
-  posix <- read.csv(posixFile,header = FALSE)
-  
-  posix <- posix[1:4]
-  posix <- posix[-2]
-  colnames(posix)<-c("barcode","array_col","array_row")
-  
-  #return
-  posix
-}
 
-getGenePosition <- function(matrix,positions,gene)
+
+
+getGenePositions <- function(matrix,gene)
 {
   #order and sort positions
   cols <- colnames(matrix)
 
-  
+  positions <- cells_indexes
   positions<-subset(positions,barcode %in% cols)
   positions<- positions[match(cols,positions$barcode),]
   
