@@ -59,17 +59,22 @@ server <- function(input, output, session) {
                 #Start to Plot 
                 output$conc <- renderPlot({
                     if(input$gene!=""){
-                        ggplot(res(),aes(x,y)) + geom_point(aes(col=val),size=dim())
+                        ggplot(res(),aes(x=x,y=y,colour=val)) + geom_point(size=dim()) + scale_colour_gradient(low = "steelblue",high = "navyblue")
                     }
                     
                 })
             
                 output$dens <- renderPlot({
-                    if(input$gene!=""){
-                        ggplot(res(),aes(x,y)) + geom_hex()  
+                    if(input$gene != ""){
+                        ggplot(res(),aes(x=x,y=y)) + geom_hex() + scale_fill_gradient(low = "steelblue",high = "navyblue")
                     }
                 })
             
+                output$hist <- renderPlot({
+                    if(input$gene != ""){
+                        ggplot(res(),aes(x=val)) + geom_histogram(color="navyblue",fill="steelblue")
+                    }
+                })
                 #update UI
                 output$loaded<-renderText("matrix loaded")
             

@@ -56,9 +56,7 @@ getGenePositions <- function(matrix,gene)
   #order and sort positions
   cols <- colnames(matrix)
 
-  positions <- cells_indexes
-  positions<-subset(positions,barcode %in% cols)
-  positions<- positions[match(cols,positions$barcode),]
+  positions <- cells_indexes[match(cols,cells_indexes$barcode),]
   
   #initialize variables
   x<-c(NULL)

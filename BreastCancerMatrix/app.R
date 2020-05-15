@@ -10,6 +10,5 @@ source("shiny/UI.R")
 source("shiny/Server.R")
 
 
-
 options(browser='false')
 shinyApp(ui = ui, server = server)

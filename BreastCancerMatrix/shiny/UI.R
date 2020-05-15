@@ -1,7 +1,7 @@
 ui <- fluidPage(
     
     # Application title
-    titlePanel("Single Cell Plots"),
+    titlePanel("Single Cell RNA-Seq Plots"),
     
     sidebarLayout(
         sidebarPanel(
@@ -13,15 +13,11 @@ ui <- fluidPage(
         ),
         mainPanel(
             fluidRow(align="center",
-                     div(
-                         h3("Expression"),
-                         plotOutput("conc",width = "40vw",height = "40vw"),
-                         
-                     ),
-                     div(
-                         h3("Intensity"),
-                         plotOutput("dens",width = "40vw",height = "40vw")
-                     )
+                     tabsetPanel(
+                         tabPanel("Intensity",plotOutput("dens",width = "45vw",height = "45vw")),
+                         tabPanel("Expression",plotOutput("conc",width = "45vw",height = "45vw")),
+                         tabPanel("Histogram",plotOutput("hist",width = "45vw",height = "45vw"))
+                )
             )
         )
     )
