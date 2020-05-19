@@ -1,46 +1,54 @@
 #github library: https://github.com/wleepang/shiny-directory-input
 library(shinyDirectoryInput)
+library(shinydashboard)
 
-ui <- fluidPage(
-    add_busy_bar(color = "#FF0000"),
-    # Application title
-    titlePanel("Single Cell RNA-Seq Plots"),
+#sidebar definition
+sidebar <- dashboardSidebar(
+  sidebarMenu(
+    fluidRow(align= "center",htmlOutput("loaded")),
+    menuItem("Load Data",icon = icon("file"),tabName = "load_tab"),
+    menuItem("Clustering", icon= icon("project-diagram"),tabName = "clust_tab"),
+    menuItem("Charts", icon = icon("bar-chart-o"), startExpanded = TRUE,
+   menuSubItem("Expression","expr_tab"),
+      menuSubItem("Density","dens_tab"),
+      menuSubItem("Histogram","histo_tab"))),
+  selectizeInput("gene","Gene to map:",c(Choose='',NULL))
+)
 
-    #main layout
-    sidebarLayout(
-        sidebarPanel(
-
-            #status message
-            h3( textOutput("loaded") ),
-            p("the directory must contain: matrix.mtx, barcode.tsv and features.tsv",style="margin-bottom:30px"),
-
-            #inputs
+#tab body definition
+LoadDataTab <- tabItem(tabName = "load_tab",box(
+            h2("Select sample's file directory"),
+            h4("directory must contain: matrix.mtx, features.tsv and barcodes.tsv"),
             directoryInput('directory',label = "Files directory:"),
-            actionButton("load","load",style="margin-bottom:30px"),
-            selectizeInput("gene","Gene to map:",c(Choose='',NULL))
-        ),
-        mainPanel(
-            #align everytingh to center
-            fluidRow(align="center",
-                     tabsetPanel(
-                         #plot tabs
-                         tabPanel("Intensity", plotOutput("inten", width = "40vw", height = "40vw")),
-                         tabPanel("Expression", plotOutput("expr", width = "40vw", height = "40vw")),
-                         tabPanel("Histogram", plotOutput("hist", width = "40vw", height = "40vw")),
+            actionButton("load","load",style="margin-bottom:30px")
+     ))
 
-                         #cluster tab
-                         tabPanel("Cluster", fluidRow(
-                              #params
-                              column(3, selectInput(inputId = "feat_sel", label = "feature selection:",choices = c("PCA","LSA"))),
-                              column(3, selectInput(inputId = "dim_red", label = "dimensionality reduction:", choices = c("t-SNE","UMAP")))
-                            ),fluidRow( align = "left",
-                              column(3, actionButton("run_clust","run clustering"))
-                            ),fluidRow( align= "center",
-                              #plot
-                              column(12, plotOutput("clust", width = "35vw", height = "35vw")))
-                         )
-                     )
-                )
-            )
-        )
-    )
+ClusteringTab <- tabItem(tabName = "clust_tab",
+        box( title = "clustering params",
+             selectInput(inputId = "feat_sel", label = "feature selection:",choices = c("PCA","LSA")),
+             selectInput(inputId = "dim_red", label = "dimensionality reduction:", choices = c("t-SNE","UMAP")),
+             actionButton("run_clust","run clustering")
+        ),box(title = "Chart",plotOutput("clust", width = "35vw", height = "35vw"))
+      )
+
+ExpressionTab <- tabItem(tabName = "expr_tab",box(
+  plotOutput("expr", width = "40vw", height = "40vw")
+))
+densityTab <- tabItem(tabName = "dens_tab",box(
+  plotOutput("inten", width = "40vw", height = "40vw")
+))
+HistoTab <- tabItem(tabName = "histo_tab",box(
+  plotOutput("hist", width = "40vw", height = "40vw")
+))
+
+#body definition
+body <- dashboardBody(
+  tabItems(LoadDataTab,ClusteringTab,densityTab,HistoTab,ExpressionTab)
+)
+
+#ui definition
+ui <- dashboardPage(
+  dashboardHeader(title = "Single Cell RNA-Seq"),
+  sidebar,
+  body
+)
