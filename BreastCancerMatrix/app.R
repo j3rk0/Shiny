@@ -1,11 +1,8 @@
-#github library: https://github.com/wleepang/shiny-directory-input
-library(shinyDirectoryInput)
-library(shinybusy)
 library(shiny)
-library(ggplot2)
 
 source("library/SaveAndLoadMatrix.R")
 source("library/Normalization.R")
+source("library/gf-icf_pipeline.R")
 source("shiny/UI.R")
 source("shiny/Server.R")
 
