@@ -5,7 +5,7 @@ server <- function(input, output, session) {
 
 
     matrix <- NULL
-
+    log10mtx <- NULL
     output$loaded<-renderText('<h3 style="color:red;">matrix not loaded</h3>')
 
     #directory selection:
@@ -26,7 +26,7 @@ server <- function(input, output, session) {
     #reactive calculate the gene expression
     res<-reactive({
          if(!is.null(matrix)){
-            getGenePositions(logMatrix(matrix),input$gene)
+            getGenePositions(log10mtx,input$gene)
         }
     })
 
@@ -55,7 +55,7 @@ server <- function(input, output, session) {
                 show_modal_spinner()
 
                 matrix <<- removeUnexpressed(loadMatrix(directory),1)
-
+                log10mtx <<- logMatrix(matrix)
 
                 #update gene selection input
                 updateSelectizeInput(session,'gene',choices = rownames(matrix),server = TRUE)
@@ -78,7 +78,7 @@ server <- function(input, output, session) {
 
                 output$hist <- renderPlot({
                     if(input$gene != ""){
-                        ggplot(res(),aes(x=val)) + geom_histogram(color="navyblue",fill="steelblue")
+                        ggplot(res(),aes(x=val)) + geom_histogram(color="navyblue",fill="steelblue") + labs(x="expression")
                     }
                 })
 
