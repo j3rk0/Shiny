@@ -25,7 +25,7 @@ cluster_lsa_tsne <- function (normalized) {
 cluster_lsa_umap <- function (normalized){
   lsa <- runLSA(normalized,50)
   umap <- runReduction(lsa,reduction = "tumap",seed = 0,nt=4)
-  clustcells(umap, dist.method = "manhattan", nt = 4, k = 61 , community.algo = "louvian (2",seed=0,resolution = 0.5,n.start = 25,n.iter = 50)
+  clustcells(umap, dist.method = "manhattan", nt = 4, k = 61 , community.algo = "louvian 2",seed=0,resolution = 0.5,n.start = 25,n.iter = 50)
 }
 
 plot_cell_cluster <- function (clustered){
