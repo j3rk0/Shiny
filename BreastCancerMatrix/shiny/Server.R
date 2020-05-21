@@ -52,13 +52,14 @@ server <- function(input, output, session) {
             {
 
                 #function to load matrix and gene positions dataframe
-                show_modal_spinner()
+                show_modal_spinner(text = "Loading matrix...")
 
-                matrix <<- removeUnexpressed(loadMatrix(directory),1)
-                log10mtx <<- logMatrix(matrix)
+                matrix <<- gficfNormalize(loadMatrix(directory))
+                #matrix <<- removeUnexpressed(loadMatrix(directory),1)
+                log10mtx <<- logMatrix(matrix$rawCounts)
 
                 #update gene selection input
-                updateSelectizeInput(session,'gene',choices = rownames(matrix),server = TRUE)
+                updateSelectizeInput(session,'gene',choices = rownames(matrix$rawCounts),server = TRUE)
 
                 remove_modal_spinner()
                 #Start to Plot
@@ -97,23 +98,24 @@ server <- function(input, output, session) {
             clust <- NULL
             fs <- input$feat_sel
             dr <- input$dim_red
-            show_modal_spinner()
-            mtx <- gficfNormalize(matrix)
+            show_modal_spinner(text = "Clustering...")
             if(fs=="PCA") {
                if(dr=="t-SNE"){
-                   clust <- cluster_pca_tsne(mtx)
+                   clust <- cluster_pca_tsne(matrix)
                }else{ #UMAP
-                   clust <- cluster_pca_umap(mtx)
+                   clust <- cluster_pca_umap(matrix)
                }
             }else{ #LSA
                if(dr=="t-SNE"){
-                   clust <- cluster_lsa_tsne(mtx)
+                   clust <- cluster_lsa_tsne(matrix)
                }else{ #UMAP
-                   clust <- cluster_lsa_umap(mtx)
+                   clust <- cluster_lsa_umap(matrix)
                }
             }
             remove_modal_spinner()
             output$clust <- renderPlot({plot_cell_cluster(clust)})
+            clust_mat <- get_clust_matrix(clust)
+            output$map <- renderPlot({ggplot(data = clust_mat, aes(x= x, y= y,colour=cluster)) + geom_point(size=2) + labs(x="x",y="y",colour="cluster")})
         }
     })
 }
