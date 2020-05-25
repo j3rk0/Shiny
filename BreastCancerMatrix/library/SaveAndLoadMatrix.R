@@ -1,7 +1,5 @@
 
-# colonne: barcode 33 mila matrix[,x]
-# righe: geni 3 mila matrix[x,]
-cells_indexes <- read.csv("library/cells_indexes.csv")
+cells_indexes <- read.csv("res/cells_indexes.csv")
 
 
 getColnames <- function(path)
