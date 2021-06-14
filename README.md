@@ -1,4 +1,4 @@
-# Shiny-scRNA-Seq-Tool
+# Spatial scRNA-Seq Tool
 This R Shiny App allow to read single-cell RNA-Seq data via a simple interface. 
 
 This software let you plot graph about RNA concentration and cell's information.
