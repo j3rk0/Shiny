@@ -2,7 +2,7 @@
 This R Shiny App allow to read spatial RNA-Seq data via a simple interface.
 the following features are provided:
 
-- graphs about single genes:
+- charts about single genes:
   - map of barcodes expression
   - map of density of barcode expressing the gene
   - histogram of gene-expression ( expression vs barcode count having that expression)
@@ -16,6 +16,16 @@ The data normalization algorithm used by this software is the GF-ICF (for refere
 Dimensionality reduction algorithms are the one provided with GF-ICF package (t-SNE, PCA).
 
 Another feature is the capability to load tidymodels classifiers to make some prediction about the data
+
+### marker cluster table and chart:
+![marker cluster graph](https://i.imgur.com/j0HqnFY.png)
+
+### breast cancer subtype classification:
+![classification tab](https://i.imgur.com/vMejlAT.png)
+
+### dimensionality reduction chart and cluster map:
+![dimensionality reduction chart](https://i.imgur.com/MUAXNL6.png)
+
 
 ## TO-DO:
 - fixing model loading for custom labels
