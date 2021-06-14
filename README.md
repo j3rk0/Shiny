@@ -20,7 +20,7 @@ Another feature is the capability to load tidymodels classifiers to make some pr
 ### marker cluster table and chart:
 ![marker cluster graph](https://i.imgur.com/j0HqnFY.png)
 
-### breast cancer subtype classification:
+### breast cancer subtype classification using xgboost:
 ![classification tab](https://i.imgur.com/vMejlAT.png)
 
 ### dimensionality reduction chart and cluster map:
