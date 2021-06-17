@@ -17,6 +17,10 @@ Dimensionality reduction algorithms are the one provided with GF-ICF package (t-
 
 Another feature is the capability to load tidymodels classifiers to make some prediction about the data
 
+### analyzed tissue (human breast cancer):
+
+![breast cancer tissue](https://i.imgur.com/4hetLdz.jpg)
+
 ### marker cluster table and chart:
 ![marker cluster graph](https://i.imgur.com/j0HqnFY.png)
 
