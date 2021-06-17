@@ -19,7 +19,7 @@ Another feature is the capability to load tidymodels classifiers to make some pr
 
 ### analyzed tissue (human breast cancer):
 
-![breast cancer tissue](https://i.imgur.com/4hetLdz.jpg | width=100)
+<img src="https://i.imgur.com/4hetLdz.jpg" width=30% height=30% alt="breast cancer tissue image">
 
 ### marker cluster table and chart:
 ![marker cluster graph](https://i.imgur.com/j0HqnFY.png)
