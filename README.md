@@ -5,7 +5,7 @@ the following features are provided:
 - charts about single genes:
   - map of barcodes expression
   - map of density of barcode expressing the gene
-  - histogram of gene-expression ( expression vs barcode count having that expression)
+  - histogram of gene-expression ( expression vs barcode count having that level of expression)
 - clustering with tSNE or UMAP
 - dimensionality reduction chart with PCA and LSA dimensionality reduction
 - map of barcodes cluster
